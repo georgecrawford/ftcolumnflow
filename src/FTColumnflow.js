@@ -73,7 +73,8 @@
 			minFixedPadding:          1,
 			lineHeight:               null,
 			noWrapOnTags:             [],
-			allowReflow:              true
+			allowReflow:              true,
+			baselineOffset:           0
 		},
 
 		// CSS Style declarations
@@ -256,6 +257,11 @@
 			// Check lineHeight, if specified
 			if ((config.lineHeight !== null) && isNaN(config.lineHeight = parseInt(config.lineHeight, 10))) {
 				throw new FTColumnflowException('LineheightException', 'lineHeight must be an integer.');
+			}
+
+			// Check baselineOffset, if specified
+			if ((config.baselineOffset !== null) && isNaN(config.baselineOffset = parseFloat(config.baselineOffset, 10))) {
+				throw new FTColumnflowException('baselineOffsetException', 'baselineOffset must be a float.');
 			}
 
 			// Check class names are valid
@@ -528,6 +534,8 @@
 
 			// Now the line-height is known, the column height can be determined
 			config.layoutDimensions.columnHeight = config.lineHeight ? _roundDownToGrid(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
+
+			config.layoutDimensions.baselineOffset = config.baselineOffset ? (config.lineHeight - config.baselineOffset) : 0;
 
 			// For debugging, show the grid lines with CSS
 			if (showGrid) {
@@ -1329,7 +1337,7 @@
 
 
 		function _openColumn(column, indexedColumnNum) {
-			return '<div class="' + config.columnClass + ' ' + config.columnClass + '-' + (indexedColumnNum + 1) + '" style="height: ' + _round(column.height) + 'px; top: ' + _round(column.top) + 'px;">';
+			return '<div class="' + config.columnClass + ' ' + config.columnClass + '-' + (indexedColumnNum + 1) + '" style="height: ' + _round(column.height) + 'px; top: ' + _round(column.top + config.layoutDimensions.baselineOffset) + 'px;">';
 		}
 
 
