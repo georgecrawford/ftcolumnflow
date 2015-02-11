@@ -55,8 +55,8 @@ p {
 /* Colours */
 
 .cf-column p, .cf-column div {
+	background: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px) 0% 0% / 100% 20px;
 	background-color: rgba(0, 0, 0, 0.1);
-	background-image: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px);
 }
 
 .cf-page {

@@ -3,8 +3,8 @@
 p {
 	margin: 20px 0;
 	line-height: 20px;
+	background: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px) 0% 0% / 100% 20px, -webkit-repeating-linear-gradient(green 0px, green 1px, transparent 1px, transparent 20px) 0% 12px / 100% 20px;
 	background-color: rgba(0, 0, 0, 0.1);
-	background-image: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px);
 }
 
 img { width: 100%; height: auto; }

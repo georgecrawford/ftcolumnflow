@@ -26,16 +26,16 @@ div {
 }
 
 .cf-column p {
-	background-color: rgba(0, 0, 0, 0.1);
 	outline: 1px solid white;
 	color: white;
-	background-image: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px);
+	background: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px) 0% 0% / 100% 20px;
+	background-color: rgba(0, 0, 0, 0.1);
 }
 
 .cf-column div {
 	outline: 1px solid white;
 	color: white;
-	background-image: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 100px);
+	background: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 100px) 0% 0% / 100% 100px;
 }
 
 .simulated-parags {
