@@ -2,14 +2,28 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     buster: {
-      test: {
-        config: 'test/buster.js'
+      all: {
+        test: {
+          config: 'test/buster.js',
+          // reporter: 'specification'
+        },
+        server: {
+          port: 1111
+        }
       },
-      server: {
-        port: 1111
+      manual: {
+        test: {
+          config: 'test/buster.js',
+          // reporter: 'specification'
+        },
+        server: {
+          port: 1112
+        }
       }
     }
   });
   grunt.loadNpmTasks('grunt-buster');
-  grunt.registerTask('test', ['buster:test']);
+  grunt.registerTask('test', ['buster:all']);
+  grunt.registerTask('server-only', ['buster:manual:server:block']);
+  grunt.registerTask('tests-only', ['buster:manual:test']);
 };

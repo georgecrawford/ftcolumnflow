@@ -4,12 +4,15 @@
  * @copyright The Financial Times Limited [All Rights Reserved]
 */
 
-"use strict";
+var target, viewport;
 
 buster.testCase('Config', {
 
 	setUp : function(done) {
+		this.timeout = 1000;
 		document.body.innerHTML = '<div id="viewportid"><div id="targetid"></div></div>';
+		target   = document.getElementById('targetid');
+		viewport = document.getElementById('viewportid');
 		addStylesheets(['all.css', 'config.css'], done);
 	},
 

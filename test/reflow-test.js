@@ -4,12 +4,15 @@
  * @copyright The Financial Times Limited [All Rights Reserved]
 */
 
+var target, viewport;
 
 buster.testCase('Reflow', {
 
 	setUp : function(done) {
 		this.timeout = 1000;
 		document.body.innerHTML = '<div id="viewportid"><div id="targetid"></div></div>';
+		target   = document.getElementById('targetid');
+		viewport = document.getElementById('viewportid');
 		addStylesheets(['all.css', 'reflow.css'], done);
 	},
 
@@ -22,7 +25,7 @@ buster.testCase('Reflow', {
 
 		var lengthBefore = document.getElementsByTagName('style').length;
 
-		createCf().flow('<div class="height600">height600</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>');
 
 		var lengthAfter = document.getElementsByTagName('style').length;
 
@@ -34,7 +37,7 @@ buster.testCase('Reflow', {
 	'//ShouldReflow' : function() {
 
 		// page is 800 x 600, columns are 350 x 600
-		createCf({
+		var cf = createCf({
 			columnGap     : 100,
 			columnCount   : 2,
 		}).flow('<div class="height3000">height3000</div>');
@@ -68,7 +71,7 @@ buster.testCase('Reflow', {
 
 	'ShouldReflowUsingNewConfig' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 100,
 			columnCount   : 2
 		}).flow('<div class="height3000">height3000</div>');
@@ -98,7 +101,7 @@ buster.testCase('Reflow', {
 
 		var stylesBefore = document.querySelectorAll('style').length;
 
-		createCf().flow('<div class="height3000">height3000</div>');
+		var cf = createCf().flow('<div class="height3000">height3000</div>');
 
 		assert.defined(target);
 		refute.equals(target.innerHTML, '');
@@ -112,7 +115,7 @@ buster.testCase('Reflow', {
 
 	'ShouldPreventAReflowWhenConfigFlagIsFalse' : function() {
 
-		createCf({
+		var cf = createCf({
 			allowReflow: false
 		}).flow('<div class="height3000">height3000</div>');
 

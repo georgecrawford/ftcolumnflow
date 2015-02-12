@@ -1,5 +1,15 @@
 var config = module.exports;
 
+// var readFile = require('fs').readFile;
+
+// readFile('test/css/AllTests.css', {
+// 	encoding: 'utf8'
+// }, function(err, res) {
+// 	if (err) return console.error(err);
+
+// 	console.log(res);
+// });
+
 
 config["My tests"] = {
     rootPath: "../",

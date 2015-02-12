@@ -1382,6 +1382,8 @@
 			_findLineHeight();
 			_flowContent();
 			_renderFlowedContent();
+
+			return this;
 		};
 
 		this.reflow = function(newConfig) {
@@ -1400,6 +1402,8 @@
 			_findLineHeight();
 			_flowContent();
 			_renderFlowedContent();
+
+			return this;
 		};
 
 		this.destroy = function() {

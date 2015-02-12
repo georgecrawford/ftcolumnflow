@@ -1,3 +1,7 @@
+#stylesheetload-baselinegrid {
+	position: absolute;
+	z-index: -1000;
+}
 
 
 p {

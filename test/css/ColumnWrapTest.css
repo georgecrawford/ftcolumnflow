@@ -1,3 +1,7 @@
+#stylesheetload-columnwrap {
+	position: absolute;
+	z-index: -1000;
+}
 
 div {
 	line-height: 20px;

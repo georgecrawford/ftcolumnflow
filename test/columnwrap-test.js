@@ -6,18 +6,15 @@
 
 "use strict";
 
-var _exactHeightWrap     = '<div class="height500">height500</div><div class="height100">height100</div><div class="height100">height100</div>';
-var _wrapToPage2         = '<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div><div class="height100">height100</div>';
-var _overflowedElement   = '<div class="height500">height500</div><div class="height50">height50</div><div class="height100">height100</div>';
-
-
-
-
+var target, viewport;
 
 buster.testCase('ColumnWrap', {
 
 	setUp : function(done) {
-		document.body.innerHTML = '<div id="viewportid"><div id="targetid"></div></div>';
+		this.timeout = 1000;
+		document.body.innerHTML = '<div id="viewportid"><div id="targetid"></div></div></div>';
+		target   = document.getElementById('targetid');
+		viewport = document.getElementById('viewportid');
 		addStylesheets(['all.css', 'columnwrap.css'], done);
 	},
 
@@ -28,7 +25,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldAcceptNodeOrStringAsContentParameter' : function() {
 
-		createCf();
+		var cf = createCf();
 
 		refute.exception(function test() {
 			cf.flow(document.createElement('p'));
@@ -45,7 +42,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldAcceptNodeOrStringAsFixedParameter' : function() {
 
-		createCf();
+		var cf = createCf();
 
 		refute.exception(function test() {
 			cf.flow('', document.createElement('p'));
@@ -62,7 +59,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldNotChangeExistingTargetId' : function() {
 
-		createCf().flow();
+		var cf = createCf().flow();
 		assert(target instanceof HTMLElement);
 	},
 
@@ -78,7 +75,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCreateAHiddenPreloadArea' : function() {
 
-		createCf().flow();
+		var cf = createCf().flow();
 
 		var preload = target.querySelector('.cf-preload');
 
@@ -91,7 +88,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCreateAPreloadColumnOfTheCorrectWidth' : function() {
 
-		createCf().flow();
+		var cf = createCf().flow();
 
 		var preload = target.querySelector('.cf-preload');
 		var column  = preload.querySelector('.cf-column');
@@ -103,7 +100,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldRespectConfigColumnAndClassNamesInPreloadArea' : function() {
 
-		createCf({
+		var cf = createCf({
 			pageClass   : 'mypage',
 			columnClass : 'mycol',
 		}).flow();
@@ -117,7 +114,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldAddFlowedContentToPreloadArea' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var preload = target.querySelector('.cf-preload');
 		var column  = preload.childNodes[0];
@@ -133,7 +130,7 @@ buster.testCase('ColumnWrap', {
 		flowedContent.appendChild(text);
 		contentContainer.appendChild(flowedContent);
 
-		createCf().flow(contentContainer);
+		var cf = createCf().flow(contentContainer);
 
 		var preload = target.querySelector('.cf-preload');
 		var column  = preload.childNodes[0];
@@ -152,14 +149,14 @@ buster.testCase('ColumnWrap', {
 
 		document.getElementById('viewportid').appendChild(contentContainer);
 
-		createCf().flow(contentContainer);
+		var cf = createCf().flow(contentContainer);
 
 		assert.match(document.getElementById('contentContainer').innerHTML, '<p>Hello there!</p>');
 	},
 
 	'ShouldAddAShortParagraphToPage1Column1' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var page = target.querySelector('.cf-page-1');
 		assert(page instanceof HTMLElement);
@@ -176,14 +173,14 @@ buster.testCase('ColumnWrap', {
 
 		target.innerHTML = 'OVERWRITE';
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		refute.match(target.innerHTML, /OVERWRITE/);
 	},
 
 	'ShouldSetCorrectPageDimensions' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var page   = target.querySelector('.cf-page-1');
 
@@ -193,7 +190,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldRespectConfigColumnAndClassNames' : function() {
 
-		createCf({
+		var cf = createCf({
 			pageClass     : 'mypage',
 			columnClass   : 'mycol',
 		}).flow('<p>Hello there!</p>');
@@ -207,7 +204,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldHideOverflowOnGeneratedColumns' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var column = target.querySelector('.cf-column-1');
 
@@ -216,7 +213,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldSetTheCorrectWidthAndHeightOnTheGeneratedColumn' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var column = target.querySelector('.cf-column-1');
 
@@ -226,7 +223,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldSetCorrectAbsolutePositioningCss' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var page   = target.querySelector('.cf-page-1');
 		var column = target.querySelector('.cf-column-1');
@@ -238,7 +235,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldSetTheCorrectPositionOnColumn1' : function() {
 
-		createCf().flow('<p>Hello there!</p>');
+		var cf = createCf().flow('<p>Hello there!</p>');
 
 		var column = target.querySelector('.cf-column-1');
 
@@ -248,7 +245,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCreateASecondColumnWhenFirstIsFull' : function() {
 
-		createCf().flow(_exactHeightWrap);
+		var cf = createCf().flow(_exactHeightWrap);
 
 		var column1 = target.querySelector('.cf-column-1');
 
@@ -259,7 +256,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldSetCorrectDimensionsAndPositionOnSecondColumn' : function() {
 
-		createCf().flow(_exactHeightWrap);
+		var cf = createCf().flow(_exactHeightWrap);
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -274,7 +271,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldWriteCorrectElementsToColumns' : function() {
 
-		createCf().flow(_exactHeightWrap);
+		var cf = createCf().flow(_exactHeightWrap);
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -291,7 +288,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldFillColumnsAndCreateSecondPage' : function() {
 
-		createCf().flow(_wrapToPage2);
+		var cf = createCf().flow(_wrapToPage2);
 
 		var page1  = target.querySelector('.cf-page-1');
 		var page2  = target.querySelector('.cf-page-2');
@@ -309,7 +306,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldDisplayPagesHorizontallyByDefault' : function() {
 
-		createCf().flow(_wrapToPage2);
+		var cf = createCf().flow(_wrapToPage2);
 
 		var page1  = target.querySelector('.cf-page-1');
 		var page2  = target.querySelector('.cf-page-2');
@@ -323,7 +320,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldDisplayPagesVerticallyWhenSpecified' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 3,
 			pageArrangement : 'vertical',
@@ -341,7 +338,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldAddPagePadding' : function() {
 
-		createCf({
+		var cf = createCf({
 			pagePadding   : 50,
 			columnGap     : 25,
 			columnCount   : 5,
@@ -373,7 +370,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldAddVerticalPagePadding' : function() {
 
-		createCf({
+		var cf = createCf({
 			pagePadding   : 50,
 			columnGap   : 25,
 			columnCount : 5,
@@ -405,7 +402,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldRepeatAnOverflowedElementOnTheNextColumn' : function() {
 
-		createCf().flow(_overflowedElement);
+		var cf = createCf().flow(_overflowedElement);
 
 		var column1 = target.querySelector('.cf-column-1');
 
@@ -422,7 +419,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldSetNegativeTopMarginOnRemainderOfOverflowedElement' : function() {
 
-		createCf().flow(_overflowedElement);
+		var cf = createCf().flow(_overflowedElement);
 
 		var column2 = target.querySelector('.cf-column-2');
 		var element = column2.childNodes[0];
@@ -432,7 +429,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyWrapALargeElementOverManyColumns' : function() {
 
-		createCf().flow('<div class="height300">height300</div><div class="height1000">height1000</div>');
+		var cf = createCf().flow('<div class="height300">height300</div><div class="height1000">height1000</div>');
 
 		var column2 = target.querySelector('.cf-column-2');
 		var column3 = target.querySelector('.cf-column-3');
@@ -443,7 +440,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyWrapAHugeElementOverManyColumns' : function() {
 
-		createCf().flow('<div class="height3000">height3000</div>');
+		var cf = createCf().flow('<div class="height3000">height3000</div>');
 
 		var page2   = target.querySelector('.cf-page-2');
 		var p2col2  = page2.querySelector('.cf-column-2');
@@ -454,7 +451,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldWrapPlainTextInParagraphTags' : function() {
 
-		createCf().flow('plain text');
+		var cf = createCf().flow('plain text');
 
 		var column = target.querySelector('.cf-column-1');
 
@@ -463,7 +460,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldIgnoreEmptyTextNodes' : function() {
 
-		createCf().flow('\n<p>parag 1</p>\n<p>parag 2</p>\n');
+		var cf = createCf().flow('\n<p>parag 1</p>\n<p>parag 2</p>\n');
 
 		var column = target.querySelector('.cf-column-1');
 
@@ -472,7 +469,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldNotCarryParagraphBottomMarginsOverToNextColumn' : function() {
 
-		createCf().flow('<div class="simulated-parags">simulated-parags</div><div class="simulated-parags">simulated-parags</div><div class="simulated-parags">simulated-parags</div>');
+		var cf = createCf().flow('<div class="simulated-parags">simulated-parags</div><div class="simulated-parags">simulated-parags</div><div class="simulated-parags">simulated-parags</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -486,7 +483,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldNotWrapAnElementWithNowrapClass' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height200 nowrap">height200 nowrap</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height200 nowrap">height200 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -502,7 +499,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldNotMoveAnElementWithNowrapClassWhichFitsInAColumn' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height100 nowrap">height100 nowrap</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height100 nowrap">height100 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -513,7 +510,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyPositionSuccessiveNowrapElements' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height500 nowrap">height500 nowrap</div><div class="height500 nowrap">height500 nowrap</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height500 nowrap">height500 nowrap</div><div class="height500 nowrap">height500 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -529,7 +526,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCropATallNowrapElement' : function() {
 
-		createCf().flow('<div class="height1000 nowrap">height1000 nowrap</div>');
+		var cf = createCf().flow('<div class="height1000 nowrap">height1000 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -540,7 +537,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldMoveThenCropATallNowrapElement' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height1000 nowrap">height1000 nowrap</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height1000 nowrap">height1000 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -558,7 +555,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldNotWrapAnElementWhichMatchesNoWrapOnTags' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 3,
 			noWrapOnTags : ['section'],
@@ -578,7 +575,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldIgnoreCaseOfNoWrapOnTags' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 3,
 			noWrapOnTags : ['SECTION'],
@@ -598,7 +595,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldNotWrapAnElementWithKeepwithnextClass' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height200 keepwithnext">height200 keepwithnext</div><div class="height100">height100</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height200 keepwithnext">height200 keepwithnext</div><div class="height100">height100</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -614,7 +611,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldWrapAKeepwithnextElementWhenItsTheFinalElement' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height200 keepwithnext">height200 keepwithnext</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height200 keepwithnext">height200 keepwithnext</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -630,7 +627,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldMoveThenCropATallKeepwithnextElement' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height1000 keepwithnext">height1000 keepwithnext</div><div class="height100">height100</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height1000 keepwithnext">height1000 keepwithnext</div><div class="height100">height100</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -649,7 +646,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCropATallKeepwithnextElement' : function() {
 
-		createCf().flow('<div class="height1000 keepwithnext">height1000 keepwithnext</div><div class="height100">height100</div>');
+		var cf = createCf().flow('<div class="height1000 keepwithnext">height1000 keepwithnext</div><div class="height100">height100</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -663,7 +660,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldMoveAKeepwithnextElementToJoinFollowingPlainTextElement' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height100">height100</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height100">height100</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -677,7 +674,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldIgnoreKeepwithnextClassOnFinalElement' : function() {
 
-		createCf().flow('<div class="height400">height400</div><div class="height100 keepwithnext">height100 keepwithnext</div>');
+		var cf = createCf().flow('<div class="height400">height400</div><div class="height100 keepwithnext">height100 keepwithnext</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 
@@ -687,7 +684,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyHandleAnElementWithBothKeepwithnextAndNowrapClasses' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height200 keepwithnext nowrap">height200 keepwithnext</div><div class="height100">height100</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height200 keepwithnext nowrap">height200 keepwithnext</div><div class="height100">height100</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -700,7 +697,7 @@ buster.testCase('ColumnWrap', {
 
 	'NowrapShouldNotAffectFollowingColumns' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height200 nowrap">height200 nowrap</div><div class="height500">height500</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height200 nowrap">height200 nowrap</div><div class="height500">height500</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -715,7 +712,7 @@ buster.testCase('ColumnWrap', {
 
 	'KeepwithnextShouldNotAffectFollowingColumns' : function() {
 
-		createCf().flow('<div class="height500">height500</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height500">height500</div><div class="height500">height500</div>');
+		var cf = createCf().flow('<div class="height500">height500</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height500">height500</div><div class="height500">height500</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -731,7 +728,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyPositionANowrapFollowingAKeepwithnext' : function() {
 
-		createCf().flow('<div class="height400">height400</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height200 nowrap">height200 nowrap</div>');
+		var cf = createCf().flow('<div class="height400">height400</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height200 nowrap">height200 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -746,7 +743,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldObeyKeepwithnextWhenNextElementHasNowrapClassAndOverflows' : function() {
 
-		createCf().flow('<div class="height400">height400</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height200 nowrap">height200 nowrap</div>');
+		var cf = createCf().flow('<div class="height400">height400</div><div class="height100 keepwithnext">height100 keepwithnext</div><div class="height200 nowrap">height200 nowrap</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -762,7 +759,7 @@ buster.testCase('ColumnWrap', {
 
 	'Regression1ItShouldUpdateColumnHeightAfterAnElementIsCropped' : function() {
 
-		createCf().flow('<div class="height700 keepwithnext">700 keepwithnext</div><div class="height300">300</div><div class="height300 ">300 </div>');
+		var cf = createCf().flow('<div class="height700 keepwithnext">700 keepwithnext</div><div class="height300">300</div><div class="height300 ">300 </div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -774,7 +771,7 @@ buster.testCase('ColumnWrap', {
 
 	'Regression2MissingLastElement' : function() {
 
-		createCf().flow('<div class="height700">700</div><div class="height200 keepwithnext">200 keepwithnext</div><div class="height100">100</div>');
+		var cf = createCf().flow('<div class="height700">700</div><div class="height200 keepwithnext">200 keepwithnext</div><div class="height100">100</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -789,7 +786,7 @@ buster.testCase('ColumnWrap', {
 
 	'Regression5LargeSpaceAdded' : function() {
 
-		createCf().flow('<div class="height700">700</div><div class="height200 nowrap keepwithnext">200 nowrap keepwithnext</div><div class="height500">500</div>');
+		var cf = createCf().flow('<div class="height700">700</div><div class="height200 nowrap keepwithnext">200 nowrap keepwithnext</div><div class="height500">500</div>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -807,14 +804,14 @@ buster.testCase('ColumnWrap', {
 
 		// With the loop-protection removed, this test should cause an endless loop if the bug is not fixed.
 
-		createCf().flow('<div class="height600  keepwithnext">1: 600  keepwithnext</div><div class="height700">2: 700</div>');
+		var cf = createCf().flow('<div class="height600  keepwithnext">1: 600  keepwithnext</div><div class="height700">2: 700</div>');
 		assert(true);
 
 	},
 
 	'Regression10TheLastElementShouldNotBeCropped' : function() {
 
-		createCf().flow('<div class="height500 keepwithnext">5: 500 keepwithnext</div><div class="height200 keepwithnext">7: 200 keepwithnext</div>');
+		var cf = createCf().flow('<div class="height500 keepwithnext">5: 500 keepwithnext</div><div class="height200 keepwithnext">7: 200 keepwithnext</div>');
 
 
 		var column1 = target.querySelector('.cf-column-1');
@@ -828,7 +825,7 @@ buster.testCase('ColumnWrap', {
 
 	'Regression10SecondElementShouldBeInColumn2' : function() {
 
-		createCf().flow('<div class="height300 keepwithnext">2: 300 keepwithnext</div><div class="height400 keepwithnext">3: 400 keepwithnext</div><div class="height200">4: 200</div>');
+		var cf = createCf().flow('<div class="height300 keepwithnext">2: 300 keepwithnext</div><div class="height400 keepwithnext">3: 400 keepwithnext</div><div class="height200">4: 200</div>');
 
 
 		var column1 = target.querySelector('.cf-column-1');
@@ -844,7 +841,7 @@ buster.testCase('ColumnWrap', {
 
 	'RegressionItShouldCorrectlyPlaceSuccessiveFullheightElements' : function() {
 
-		createCf().flow('<p class="height600">height600</p><p class="height600">height600</p>');
+		var cf = createCf().flow('<p class="height600">height600</p><p class="height600">height600</p>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -858,7 +855,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyReportSinglePageCount' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnCount : 1
 		}).flow('<div class="height300">height300</div>');
 
@@ -867,7 +864,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyReportLargerPageCount' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnCount : 1
 		}).flow('<div class="height3000">height3000</div>');
 
@@ -876,7 +873,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldAddExplicitWidthAndHeightToTarget' : function() {
 
-		createCf().flow('<div class="height300">height300</div>');
+		var cf = createCf().flow('<div class="height300">height300</div>');
 
 		assert.match(target.style.width, '800px');
 		assert.match(cssProp(target, 'width'), '800px');
@@ -885,7 +882,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldCorrectlyReportLayoutDimensions' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap   : 20,
 			columnCount : 4,
 			pagePadding : 50
@@ -904,7 +901,7 @@ buster.testCase('ColumnWrap', {
 
 	'ShouldRemovePreloadAreasWhenAllowReflowIsFalse' : function() {
 
-		createCf({
+		var cf = createCf({
 			allowReflow: false
 		}).flow('<div class="height300">height300</div>', '<div class="fixed">fixedContent</div>');
 
@@ -914,7 +911,7 @@ buster.testCase('ColumnWrap', {
 
 	'//ShouldSetExplicitHeightOnImagesWithSpecifiedAspectRatio' : function() {
 
-		createCf().flow('<div class="height300">height300</div><img style="width: 200px" data-aspect-ratio="2" src="http://www.google.co.uk/images/srpr/logo3w.png" /><div class="height300">height300</div>');
+		var cf = createCf().flow('<div class="height300">height300</div><img style="width: 200px" data-aspect-ratio="2" src="http://www.google.co.uk/images/srpr/logo3w.png" /><div class="height300">height300</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -932,7 +929,7 @@ buster.testCase('ColumnWrap', {
 
 	'//ShouldObeyAllHistoricalKeepwithnextElementsWhichFitInNextColumn' : function() {
 
-		createCf().flow('<div class="height100 keepwithnext">1 height100 keepwithnext</div><div class="height100 plaintext">2 height100 plaintext</div><div class="height100 keepwithnext">3 height100 keepwithnext</div><div class="height100 keepwithnext">4 height100 keepwithnext</div><div class="height100 keepwithnext">5 height100 keepwithnext</div><div class="height100 keepwithnext">6 height100 keepwithnext</div><div class="height100 plaintext">7 height100 plaintext</div>');
+		var cf = createCf().flow('<div class="height100 keepwithnext">1 height100 keepwithnext</div><div class="height100 plaintext">2 height100 plaintext</div><div class="height100 keepwithnext">3 height100 keepwithnext</div><div class="height100 keepwithnext">4 height100 keepwithnext</div><div class="height100 keepwithnext">5 height100 keepwithnext</div><div class="height100 keepwithnext">6 height100 keepwithnext</div><div class="height100 plaintext">7 height100 plaintext</div>');
 	},
 
 	'//ShouldMoveLastInAStringOfKeepwithnextElementIntoNextColumn' : function() {},

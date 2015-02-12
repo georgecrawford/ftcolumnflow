@@ -1,3 +1,8 @@
+#stylesheetload-reflow {
+	position: absolute;
+	z-index: -1000;
+}
+
 p, div, .cf-column {
 	line-height: 20px;
 }

@@ -4,10 +4,15 @@
  * @copyright The Financial Times Limited [All Rights Reserved]
 */
 
+var target, viewport;
+
 buster.testCase('FixedElements', {
 
 	setUp : function(done) {
+		this.timeout = 1000;
 		document.body.innerHTML = '<div id="viewportid"><div id="targetid"></div></div>';
+		target   = document.getElementById('targetid');
+		viewport = document.getElementById('viewportid');
 		addStylesheets(['all.css', 'fixedelements.css'], done);
 	},
 
@@ -18,7 +23,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldCreateAHiddenPreloadArea' : function() {
 
-		createCf().flow();
+		var cf = createCf().flow();
 
 		var preload = target.querySelector('.cf-preload-fixed');
 
@@ -29,7 +34,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAddFlowedContentToPreloadArea' : function() {
 
-		createCf().flow('', '<div class="fixed">fixedContent</div>');
+		var cf = createCf().flow('', '<div class="fixed">fixedContent</div>');
 
 		var preload = target.querySelector('.cf-preload-fixed');
 
@@ -38,7 +43,7 @@ buster.testCase('FixedElements', {
 
 	'AFixedElementShouldBePlacedOnPage1' : function() {
 
-		createCf().flow('<p>flowedContent</p>', '<div class="fixed">fixedContent</div>');
+		var cf = createCf().flow('<p>flowedContent</p>', '<div class="fixed">fixedContent</div>');
 
 		var page   = target.querySelector('.cf-page-1');
 		var fixed  = page.querySelector('.fixed');
@@ -50,7 +55,7 @@ buster.testCase('FixedElements', {
 
 	'TextNodesShouldBeIgnored' : function() {
 
-		createCf().flow('<p>flowedContent</p>', '\n<div class="fixed">fixedContent</div>\n');
+		var cf = createCf().flow('<p>flowedContent</p>', '\n<div class="fixed">fixedContent</div>\n');
 
 		var page   = target.querySelector('.cf-page-1');
 		var fixed  = page.querySelector('.fixed');
@@ -62,7 +67,7 @@ buster.testCase('FixedElements', {
 
 	'AFixedElementShouldBePlacedAbsoluteTopLeftByDefault' : function() {
 
-		createCf().flow('<p>flowedContent</p>', '<div class="fixed">fixedContent</div>');
+		var cf = createCf().flow('<p>flowedContent</p>', '<div class="fixed">fixedContent</div>');
 
 		var page   = target.querySelector('.cf-page-1');
 		var fixed  = page.querySelector('.fixed');
@@ -74,7 +79,7 @@ buster.testCase('FixedElements', {
 
 	'AFixedElementShouldRespectPagePadding' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 25,
 			columnCount   : 3,
 			pagePadding   : 50,
@@ -90,7 +95,7 @@ buster.testCase('FixedElements', {
 
 	'AFixedElementShouldRespectPagePaddingInVerticalArrangement' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 25,
 			columnCount   : 3,
 			pagePadding   : 50,
@@ -107,7 +112,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldShortenTheAffectedColumnAndPlaceItLower' : function() {
 
-		createCf().flow('<p>flowedContent</p>', '<div class="fixed">fixedContent</div>');
+		var cf = createCf().flow('<p>flowedContent</p>', '<div class="fixed">fixedContent</div>');
 
 		var page   = target.querySelector('.cf-page-1');
 		var column = page.querySelector('.cf-column');
@@ -118,7 +123,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldReduceTheAvailableSpaceInAColumn' : function() {
 
-		createCf().flow('<div class="height600">height600</div>', '<div class="fixed">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>', '<div class="fixed">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -132,7 +137,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldShortenMultipleColumnsWhenTheElementSpans' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed col-span-2">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed col-span-2">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -154,7 +159,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldReduceASpanValueIfTooLarge' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed col-span-4">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed col-span-4">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 
@@ -163,7 +168,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldSpanAllColumns' : function() {
 
-		createCf().flow('<div class="height1000">height1000</div>', '<div class="fixed col-span-all">fixedContent</div>');
+		var cf = createCf().flow('<div class="height1000">height1000</div>', '<div class="fixed col-span-all">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = target.querySelector('.fixed');
@@ -176,7 +181,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldRoundUpTheHeightOfEachFixedElement' : function() {
 
-		createCf().flow('<p>flowedContent</p>', '<div class="fixed205">fixedContent</div>');
+		var cf = createCf().flow('<p>flowedContent</p>', '<div class="fixed205">fixedContent</div>');
 
 		var page   = target.querySelector('.cf-page-1');
 		var column = page.querySelector('.cf-column');
@@ -187,7 +192,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldPlaceSecondFixedElementUnderneathFirstWithAGap' : function() {
 
-		createCf().flow('<div class="height600">height600</div>', '<div class="fixed col-span-2">fixedContent</div><div class="fixed col-span-1">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>', '<div class="fixed col-span-2">fixedContent</div><div class="fixed col-span-1">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed1  = page.querySelector('.col-span-2');
@@ -211,7 +216,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldRespectSpecifiedPageAttachment' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed attach-page-2">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed attach-page-2">fixedContent</div>');
 
 
 		var page1   = target.querySelector('.cf-page-1');
@@ -229,7 +234,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAnchorToTopRight' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -244,7 +249,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAnchorToTopRightAndSpanLeft' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-2-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-2-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -261,7 +266,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldShiftAcrossToLeftToFit' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-2">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-2">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -280,7 +285,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldShiftAcrossToRightToFit' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-left col-span-2-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-left col-span-2-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -299,7 +304,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldReduceImpossibleSpanToLeft' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-4-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-4-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -318,7 +323,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAnchorToBottomRightAndSpanLeft' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed205 anchor-bottom-right col-span-2-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed205 anchor-bottom-right col-span-2-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed205');
@@ -338,7 +343,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAnchorToBottomRightAndStack' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed fixed-1 anchor-bottom-right col-span-2-left">fixedContent</div><div class="fixed fixed-2 anchor-bottom-right">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed fixed-1 anchor-bottom-right col-span-2-left">fixedContent</div><div class="fixed fixed-2 anchor-bottom-right">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed1  = page.querySelector('.fixed-1');
@@ -362,7 +367,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAnchorToColumn2' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 5
 		}).flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-col-2 col-span-2">fixedContent</div>');
@@ -390,7 +395,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAnchorToSpecifiedColumn' : function() {
 
-		createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-2-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div><div class="height600">height600</div><div class="height600">height600</div>', '<div class="fixed anchor-top-right col-span-2-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -408,7 +413,7 @@ buster.testCase('FixedElements', {
 
 	'AFixedElementAtTheBottomShouldRespectPagePadding' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 25,
 			columnCount   : 3,
 			pagePadding   : 50,
@@ -423,7 +428,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldOverlapElementsRatherThanOmitThem' : function() {
 
-		createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed-1">fixedContent</div><div class="fixed fixed-2">fixedContent</div><div class="fixed fixed-3">fixedContent</div><div class="fixed fixed-4">fixedContent</div>');
+		var cf = createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed-1">fixedContent</div><div class="fixed fixed-2">fixedContent</div><div class="fixed fixed-3">fixedContent</div><div class="fixed fixed-4">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 
@@ -440,7 +445,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldOverlapBottomElementsToo' : function() {
 
-		createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed-1 anchor-bottom-left">fixedContent</div><div class="fixed fixed-2 anchor-bottom-left">fixedContent</div><div class="fixed fixed-3 anchor-bottom-left">fixedContent</div><div class="fixed fixed-4 anchor-bottom-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed-1 anchor-bottom-left">fixedContent</div><div class="fixed fixed-2 anchor-bottom-left">fixedContent</div><div class="fixed fixed-3 anchor-bottom-left">fixedContent</div><div class="fixed fixed-4 anchor-bottom-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 
@@ -457,7 +462,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldNotPrintAColumnWhenFixedElementsHaveFilledTheSpace' : function() {
 
-		createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed600">fixedContent</div>');
+		var cf = createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed600">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column2 = page.querySelector('.cf-column-2');
@@ -471,7 +476,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldNotPrintAnyColumnsOnPage1WhenFixedElementsHaveFilledTheSpace' : function() {
 
-		createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed600 col-span-3">fixedContent</div>');
+		var cf = createCf().flow('<div class="height100">height100</div>', '<div class="fixed fixed600 col-span-3">fixedContent</div>');
 
 		var page1   = target.querySelector('.cf-page-1');
 		var page2   = target.querySelector('.cf-page-2');
@@ -489,7 +494,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldVerticallyCenterAFixedElement' : function() {
 
-		createCf().flow('<div class="height200">height200</div>', '<div class="fixed anchor-middle-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height200">height200</div>', '<div class="fixed anchor-middle-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed');
@@ -516,7 +521,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldCorrectlyHandleATallVerticallyCenteredElement' : function() {
 
-		createCf().flow('<div class="height200">height200</div>', '<div class="fixed600 anchor-middle-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height200">height200</div>', '<div class="fixed600 anchor-middle-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed600');
@@ -534,7 +539,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldCorrectlyHandleATallVerticallyCenteredElementInCol2' : function() {
 
-		createCf().flow('<div class="height1000">height1000</div>', '<div class="fixed600 anchor-middle-col-2">fixedContent</div>');
+		var cf = createCf().flow('<div class="height1000">height1000</div>', '<div class="fixed600 anchor-middle-col-2">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed   = page.querySelector('.fixed600');
@@ -558,7 +563,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldHandleANormalAndACenteredElementInTheSameColumn' : function() {
 
-		createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-top-left">fixedContent</div><div class="fixed100 anchor-middle-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-top-left">fixedContent</div><div class="fixed100 anchor-middle-left">fixedContent</div>');
 
 		var target   = document.getElementById('targetid');
 		var page     = target.querySelector('.cf-page-1');
@@ -586,7 +591,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldHandleANormalAndACenteredElementInTheSameColumnButSwapped' : function() {
 
-		createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-middle-left">fixedContent</div><div class="fixed100 anchor-top-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-middle-left">fixedContent</div><div class="fixed100 anchor-top-left">fixedContent</div>');
 
 		var target   = document.getElementById('targetid');
 		var page     = target.querySelector('.cf-page-1');
@@ -614,7 +619,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAllowABottomAlignedElementUnderneathACenteredElement' : function() {
 
-		createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-middle-left">fixedContent</div><div class="fixed100 anchor-bottom-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-middle-left">fixedContent</div><div class="fixed100 anchor-bottom-left">fixedContent</div>');
 
 		var target   = document.getElementById('targetid');
 		var page     = target.querySelector('.cf-page-1');
@@ -638,7 +643,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldHandleACollisionBetweenCenteredElements' : function() {
 
-		createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-middle-left">fixedContent</div><div class="fixed anchor-middle-left">fixedContent</div>');
+		var cf = createCf().flow('<div class="height600">height600</div>', '<div class="fixed100 anchor-middle-left">fixedContent</div><div class="fixed anchor-middle-left">fixedContent</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var fixed1  = page.querySelector('.fixed100');
@@ -662,7 +667,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldHonourTheMinimumColumnHeight' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 25,
 			columnCount   : 3,
 			columnFragmentMinHeight : 100,
@@ -680,7 +685,7 @@ buster.testCase('FixedElements', {
 
 	'RegressionPageClassShouldNotResultInEmptyPages' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 25,
 			columnCount   : 3,
 			columnFragmentMinHeight : 100
@@ -696,7 +701,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldCorrectlyFlowContentWhenColspan1IsFollowedByColspan2' : function() {
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 25,
 			columnCount   : 3,
 			columnFragmentMinHeight : 100
@@ -721,7 +726,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAllowFixedElementsToBeShiftedVertically' : function() {
 
-		createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-1 shift-up">1</div>');
+		var cf = createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-1 shift-up">1</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -733,7 +738,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldSetExplicitWidthOnFixedElementsWithAutoWidth' : function() {
 
-		createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-1 auto-width">1</div>');
+		var cf = createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-1 auto-width">1</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -745,7 +750,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldSetExplicitWidthOnFixedElementsOverTwoColumns' : function() {
 
-		createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-2 auto-width">1</div>');
+		var cf = createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-2 auto-width">1</div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -758,7 +763,7 @@ buster.testCase('FixedElements', {
 	'ShouldRespectAFloatValueForMinFixedPadding' : function() {
 
 		// 205px, minimum gap 20px, next element starts at 240px
-		createCf().flow('<p>flowedContent</p>', '<div class="fixed fixed205">fixedContent</div>');
+		var cf = createCf().flow('<p>flowedContent</p>', '<div class="fixed fixed205">fixedContent</div>');
 
 		var page   = target.querySelector('.cf-page-1');
 		var column = page.querySelector('.cf-column');
@@ -768,7 +773,7 @@ buster.testCase('FixedElements', {
 
 
 		// 205px, minimum gap 10px, next element starts at 220px
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 3,
 			minFixedPadding : 0.5
@@ -782,7 +787,7 @@ buster.testCase('FixedElements', {
 
 
 		// 200px, minimum gap 30px, next element starts at 240px
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 3,
 			minFixedPadding : 1.5
@@ -797,7 +802,7 @@ buster.testCase('FixedElements', {
 
 	'//ShouldSetExplicitHeightOnImagesWithSpecifiedAspectRatio' : function() {
 
-		createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-2"><img style="width: 200px" data-aspect-ratio="2" src="http://www.google.co.uk/images/srpr/logo3w.png" /></div>');
+		var cf = createCf().flow('<div class="height300">height300</div>', '<div class="fixed col-span-2"><img style="width: 200px" data-aspect-ratio="2" src="http://www.google.co.uk/images/srpr/logo3w.png" /></div>');
 
 		var page    = target.querySelector('.cf-page-1');
 		var column1 = page.querySelector('.cf-column-1');
@@ -812,7 +817,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAddLastPageElementToFirstPageWhenThereIsNoOtherContent' : function() {
 
-		createCf().flow('', '<div class="fixed attach-page-last">last page content</div>');
+		var cf = createCf().flow('', '<div class="fixed attach-page-last">last page content</div>');
 
 		var page1 = target.querySelector('.cf-page-1');
 		var fixed = page1.querySelector('.fixed');
@@ -823,7 +828,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAddLastPageElementToLastPageWhenThereIsOtherContent' : function() {
 
-		createCf().flow('<div class="height300">height300</div>', '<div class="fixed attach-page-last">last page content</div><div class="fixed attach-page-2">fixed2</div>');
+		var cf = createCf().flow('<div class="height300">height300</div>', '<div class="fixed attach-page-last">last page content</div><div class="fixed attach-page-2">fixed2</div>');
 
 		var page2 = target.querySelector('.cf-page-2');
 		var page3 = target.querySelector('.cf-page-3');
@@ -837,7 +842,7 @@ buster.testCase('FixedElements', {
 
 	'ShouldAddMultipleLastPageElementsInOrder' : function() {
 
-		createCf().flow('<div class="height300">height300</div>', '<div class="fixed attach-page-last attach-page-last-1">last page content</div><div class="fixed attach-page-last attach-page-last-2">last page content</div>');
+		var cf = createCf().flow('<div class="height300">height300</div>', '<div class="fixed attach-page-last attach-page-last-1">last page content</div><div class="fixed attach-page-last attach-page-last-2">last page content</div>');
 
 		var page2 = target.querySelector('.cf-page-2');
 		var page3 = target.querySelector('.cf-page-3');

@@ -12,7 +12,9 @@
     "url": "git@github.com:ftlabs/ftcolumnflow.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/grunt test"
+    "test": "echo 'Running tests with PhantomJS'; ./node_modules/.bin/grunt test",
+    "test-server": "echo 'Starting a test server. Capture your browser at http://localhost:1112 before running tests.'; ./node_modules/.bin/grunt server-only",
+    "tests-only": "echo 'Running tests; ensure you have already captured a browser at http://localhost:1112'; ./node_modules/.bin/grunt tests-only"
   },
   "keywords": [
     "css column",

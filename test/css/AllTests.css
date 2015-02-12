@@ -1,3 +1,8 @@
+#stylesheetload-all {
+	position: absolute;
+	z-index: -1000;
+}
+
 #viewportid { width: 800px; height: 600px; margin-top: 50px}
 
 

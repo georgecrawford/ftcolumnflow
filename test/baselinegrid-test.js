@@ -4,10 +4,14 @@
  * @copyright The Financial Times Limited [All Rights Reserved]
 */
 
+var target, viewport;
 
 buster.testCase('BaselineGrid', {
 	setUp : function(done) {
+		this.timeout = 1000;
 		document.body.innerHTML = '<div id="viewportid"><div id="targetid"></div></div>';
+		target   = document.getElementById('targetid');
+		viewport = document.getElementById('viewportid');
 		addStylesheets(['all.css', 'baselinegrid.css'], done);
 	},
 
@@ -18,7 +22,7 @@ buster.testCase('BaselineGrid', {
 
 	'ShouldRemoveTopMarginOnFirstElement' : function() {
 
-		createCf().flow('<p>flowedContent</p>');
+		var cf = createCf().flow('<p>flowedContent</p>');
 
 		var column  = target.querySelector('.cf-column-1');
 		var p       = column.querySelector('p');
@@ -31,7 +35,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight17';
 
-		createCf().flow('<p>flowedContent</p>');
+		var cf = createCf().flow('<p>flowedContent</p>');
 
 		var column  = target.querySelector('.cf-column-1');
 
@@ -42,7 +46,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-in-ems';
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 20,
 			columnCount   : 2,
 			pagePadding   : 50,
@@ -58,7 +62,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-in-percent';
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 20,
 			columnCount   : 2,
 			pagePadding   : 50,
@@ -74,7 +78,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-inherit';
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 20,
 			columnCount   : 2,
 			pagePadding   : 50,
@@ -90,7 +94,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-multiplier';
 
-		createCf({
+		var cf = createCf({
 			columnGap     : 20,
 			columnCount   : 2,
 			pagePadding   : 50,
@@ -106,7 +110,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-normal';
 
-		createCf().flow('<p>Test paragraph</p><p class="ten-elements">&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;</p>');
+		var cf = createCf().flow('<p>Test paragraph</p><p class="ten-elements">&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;</p>');
 
 		var column = target.querySelector('.cf-column-1');
 		var span   = column.querySelector('.ten-elements');
@@ -120,7 +124,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-variable';
 
-		createCf().flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
+		var cf = createCf().flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
 		var column  = target.querySelector('.cf-column-1');
 
@@ -131,7 +135,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-variable';
 
-		createCf().flow('<p>Test paragraph</p><p>Test paragraph</p>');
+		var cf = createCf().flow('<p>Test paragraph</p><p>Test paragraph</p>');
 
 		var column  = target.querySelector('.cf-column-1');
 
@@ -142,7 +146,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'lineheight-variable';
 
-		createCf({
+		var cf = createCf({
 			columnGap   : 25,
 			columnCount : 3,
 			lineHeight  : 19
@@ -157,7 +161,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unpadded-parags';
 
-		createCf().flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
+		var cf = createCf().flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
 		var column = target.querySelector('.cf-column-1');
 		var parags = column.getElementsByTagName('p');
@@ -175,7 +179,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unpadded-parags';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -192,7 +196,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unpadded-parags top-margin';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -209,7 +213,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unpadded-parags bottom-margin';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -226,7 +230,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'margin1px';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -243,7 +247,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'margin21px';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -260,7 +264,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unevenmargin1px';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -277,7 +281,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unpadded-parags';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p><p>Test paragraph</p><p>Test paragraph</p>');
 
@@ -293,7 +297,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unpadded-parags';
 
-		createCf({
+		var cf = createCf({
 			standardiseLineHeight : true,
 		}).flow('<p>Test paragraph</p>\n<p>Test paragraph</p>\n<p>Test paragraph</p>');
 
@@ -309,7 +313,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unequal-margin';
 
-		createCf().flow('<p class="unequal-margin height1140">height1140</p><p class="unequal-margin height40">height40</p>');
+		var cf = createCf().flow('<p class="unequal-margin height1140">height1140</p><p class="unequal-margin height40">height40</p>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -326,7 +330,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unequal-margin';
 
-		createCf().flow('<p class="height600">height600</p><p class="height620">height620</p>');
+		var cf = createCf().flow('<p class="height600">height600</p><p class="height620">height620</p>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
@@ -343,7 +347,7 @@ buster.testCase('BaselineGrid', {
 
 		document.body.className = 'unequal-margin';
 
-		createCf().flow('<p class="height580"></p><p>test parag</p>');
+		var cf = createCf().flow('<p class="height580"></p><p>test parag</p>');
 
 		var column1 = target.querySelector('.cf-column-1');
 		var column2 = target.querySelector('.cf-column-2');
