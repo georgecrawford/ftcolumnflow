@@ -52,6 +52,10 @@ config["My tests"] = {
 			file: 'test/css/BaselineGridTest.css',
 		},
 		{
+			path: '/baselineoffset.css',
+			file: 'test/css/BaselineOffsetTest.css',
+		},
+		{
 			path: '/fixedelements.css',
 			file: 'test/css/FixedElementsTest.css',
 		},

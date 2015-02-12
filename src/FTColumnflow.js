@@ -371,6 +371,8 @@
 			}
 
 			config.layoutDimensions.columnHeight = config.lineHeight ? _roundDownToGrid(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
+
+			config.layoutDimensions.baselineOffset = config.baselineOffset;
 		}
 
 
@@ -534,8 +536,6 @@
 
 			// Now the line-height is known, the column height can be determined
 			config.layoutDimensions.columnHeight = config.lineHeight ? _roundDownToGrid(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
-
-			config.layoutDimensions.baselineOffset = config.baselineOffset ? (config.lineHeight - config.baselineOffset) : 0;
 
 			// For debugging, show the grid lines with CSS
 			if (showGrid) {
@@ -852,7 +852,7 @@
 			// Set the maximum column height to a multiple of the lineHeight
 			colDefaultBottom  = config.layoutDimensions.columnHeight + config.layoutDimensions.colDefaultTop;
 			colMiddle         = config.layoutDimensions.colDefaultTop + (config.layoutDimensions.columnHeight / 2);
-			minFixedPadding   = config.minFixedPadding * config.lineHeight;
+			minFixedPadding   = (config.minFixedPadding * config.lineHeight) - config.layoutDimensions.baselineOffset;
 			fixedPadding      = _roundUpToGrid(minFixedPadding);
 
 			// Add each fixed element to a page in the correct position,
@@ -1337,7 +1337,7 @@
 
 
 		function _openColumn(column, indexedColumnNum) {
-			return '<div class="' + config.columnClass + ' ' + config.columnClass + '-' + (indexedColumnNum + 1) + '" style="height: ' + _round(column.height) + 'px; top: ' + _round(column.top + config.layoutDimensions.baselineOffset) + 'px;">';
+			return '<div class="' + config.columnClass + ' ' + config.columnClass + '-' + (indexedColumnNum + 1) + '" style="height: ' + _round(column.height) + 'px; top: ' + (_round(column.top) + config.layoutDimensions.baselineOffset) + 'px;">';
 		}
 
 

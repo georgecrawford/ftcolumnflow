@@ -1,0 +1,37 @@
+#stylesheetload-baselineoffset {
+	position: absolute;
+	z-index: -1000;
+}
+
+p {
+	margin: 0;
+	line-height: 20px;
+	background: -webkit-repeating-linear-gradient(red 0px, red 1px, transparent 1px, transparent 20px) 0% 0% / 100% 20px, -webkit-repeating-linear-gradient(green 0px, green 1px, transparent 1px, transparent 20px) 0% 12px / 100% 20px;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+p:nth-child(odd) {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+p:nth-child(even) {
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+img { width: 100%; height: auto; }
+
+.cf-page {
+	background: -webkit-repeating-linear-gradient(black 0px, black 1px, transparent 1px, transparent 100px) 0% 0% / 100% 100px, -webkit-repeating-linear-gradient(pink 0px, pink 1px, transparent 1px, transparent 20px) 0% 0% / 100% 20px;
+}
+
+.fixed {
+	height: 200px;
+	width: 250px;
+}
+
+.fixed205 {
+	height: 205px;
+}
+
+
+
