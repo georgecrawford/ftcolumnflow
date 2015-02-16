@@ -87,13 +87,13 @@ buster.testCase('BaselineOffset', {
 		var column3 = page.querySelector('.cf-column-3');
 
 		assert.match(column1.offsetTop, 8);
-		assert.match(column1.offsetHeight, 380);
+		assert.match(column1.offsetHeight, 360);
 
 		assert.match(column2.offsetTop, 8);
-		assert.match(column2.childNodes[0].offsetTop, -380);
+		assert.match(column2.childNodes[0].offsetTop, -360);
 
 		assert.match(column3.offsetTop, 8);
-		assert.match(column3.childNodes[0].offsetTop, -380);
+		assert.match(column3.childNodes[0].offsetTop, -360);
 	},
 
 	'ShouldWrapAroundFixedElementAtTopLeft' : function() {
@@ -118,10 +118,10 @@ buster.testCase('BaselineOffset', {
 		assert.match(column3.childNodes[0].offsetTop, -380);
 	},
 
-	'ShouldRespectAFloatValueForMinFixedPadding' : function() {
+	'ShouldCorrectlyAdjustToMinFixedPadding' : function() {
 
 		// 205px, minimum gap 20px, next element starts at 220px but shifted down to 228px
-		// so gap is acceptable at 23px
+		// => 23px gap
 		var cf = createCf({
 			baselineOffset: 8
 		}).flow('<p>flowedContent</p>', '<div class="fixed fixed205">fixedContent</div>');
@@ -132,7 +132,7 @@ buster.testCase('BaselineOffset', {
 		assert.match(column.offsetTop, 228);
 		assert.match(column.offsetHeight, 380);
 
-		// 205px, minimum gap 10px, next element starts at 228px
+		// 205px, minimum gap 10px, next element starts at 228px => 23px gap
 		var cf = createCf({
 			baselineOffset: 8,
 			minFixedPadding : 0.5
@@ -144,7 +144,7 @@ buster.testCase('BaselineOffset', {
 		assert.match(column.offsetTop, 228);
 		assert.match(column.offsetHeight, 380);
 
-		// 200px, minimum gap 30px, next element starts at 248px
+		// 200px, minimum gap 30px, next element starts at 248px => 48px gap
 		var cf = createCf({
 			baselineOffset: 8,
 			minFixedPadding : 1.5
@@ -155,6 +155,42 @@ buster.testCase('BaselineOffset', {
 
 		assert.match(column.offsetTop, 248);
 		assert.match(column.offsetHeight, 360);
+
+		// 200px, minimum gap 20px, element can't end at 380px as it's shifted down to
+		// 388px, so reduced to 368px => 32px gap
+		var cf = createCf({
+			baselineOffset: 8
+		}).flow('<p>flowedContent</p>', '<div class="fixed anchor-bottom-left">fixedContent</div>');
+
+		page   = target.querySelector('.cf-page-1');
+		column = page.querySelector('.cf-column');
+
+		assert.match(column.offsetTop, 8);
+		assert.match(column.offsetHeight, 360);
+
+		// 200px, minimum gap 30px, element ends at 360px, shifted down to 368px => 32px gap
+		var cf = createCf({
+			baselineOffset: 8,
+			minFixedPadding : 1.5
+		}).flow('<p>flowedContent</p>', '<div class="fixed anchor-bottom-left">fixedContent</div>');
+
+		page   = target.querySelector('.cf-page-1');
+		column = page.querySelector('.cf-column');
+
+		assert.match(column.offsetTop, 8);
+		assert.match(column.offsetHeight, 360);
+
+		// 205px, minimum gap 10px, element ends at 380px, shifted down to 385px => 15px gap
+		var cf = createCf({
+			baselineOffset: 5,
+			minFixedPadding : 0.5
+		}).flow('<p>flowedContent</p>', '<div class="fixed fixed205 anchor-bottom-left">fixedContent</div>');
+
+		page   = target.querySelector('.cf-page-1');
+		column = page.querySelector('.cf-column');
+
+		assert.match(column.offsetTop, 5);
+		assert.match(column.offsetHeight, 380);
 	},
 
 //*/

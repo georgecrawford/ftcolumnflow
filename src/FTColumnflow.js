@@ -130,8 +130,7 @@
 			// Dimensions
 			colDefaultBottom,
 			colMiddle,
-			minFixedPadding,
-			fixedPadding,
+			minPadding,
 
 			// DOM elements
 			renderArea,
@@ -370,7 +369,7 @@
 				}
 			}
 
-			config.layoutDimensions.columnHeight = config.lineHeight ? _roundDownToGrid(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
+			config.layoutDimensions.columnHeight = config.lineHeight ? _roundHeightDown(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
 
 			config.layoutDimensions.baselineOffset = config.baselineOffset;
 		}
@@ -535,7 +534,7 @@
 			}
 
 			// Now the line-height is known, the column height can be determined
-			config.layoutDimensions.columnHeight = config.lineHeight ? _roundDownToGrid(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
+			config.layoutDimensions.columnHeight = config.lineHeight ? _roundHeightDown(config.layoutDimensions.pageInnerHeight) : config.layoutDimensions.pageInnerHeight;
 
 			// For debugging, show the grid lines with CSS
 			if (showGrid) {
@@ -702,13 +701,13 @@
 					}
 					elementBottomPos = elementTopPos + normalisedElementHeight;
 					topSplitPoint    = elementTopPos - config.lineHeight;
-					bottomSplitPoint = _roundUpToGrid(elementBottomPos, true);
+					bottomSplitPoint = _roundUpToGrid(elementBottomPos);
 					break;
 
 				case 'middle':
 					elementTopPos    = colMiddle - (normalisedElementHeight / 2);
-					topSplitPoint    = _roundDownToGrid(elementTopPos, true);
-					bottomSplitPoint = _roundUpToGrid(elementTopPos + normalisedElementHeight, true);
+					topSplitPoint    = _roundDownToGrid(elementTopPos);
+					bottomSplitPoint = _roundUpToGrid(elementTopPos + normalisedElementHeight);
 
 					if (topSplitPoint < 0) topSplitPoint = 0;
 					if (bottomSplitPoint > config.layoutDimensions.columnHeight) bottomSplitPoint = config.layoutDimensions.columnHeight;
@@ -737,7 +736,7 @@
 					}
 
 					elementTopPos    = elementBottomPos - normalisedElementHeight;
-					topSplitPoint    = _roundDownToGrid(elementTopPos, true);
+					topSplitPoint    = _roundDownToGrid(elementTopPos);
 					bottomSplitPoint = elementBottomPos + config.lineHeight;
 					break;
 			}
@@ -850,10 +849,9 @@
 				totalColumnHeight  = 0;
 
 			// Set the maximum column height to a multiple of the lineHeight
-			colDefaultBottom  = config.layoutDimensions.columnHeight + config.layoutDimensions.colDefaultTop;
-			colMiddle         = config.layoutDimensions.colDefaultTop + (config.layoutDimensions.columnHeight / 2);
-			minFixedPadding   = (config.minFixedPadding * config.lineHeight) - config.layoutDimensions.baselineOffset;
-			fixedPadding      = _roundUpToGrid(minFixedPadding);
+			colDefaultBottom = config.layoutDimensions.columnHeight + config.layoutDimensions.colDefaultTop;
+			colMiddle        = config.layoutDimensions.colDefaultTop + (config.layoutDimensions.columnHeight / 2);
+			minPadding       = config.minFixedPadding * config.lineHeight;
 
 			// Add each fixed element to a page in the correct position,
 			// and determine the remaining free space for columns
@@ -945,7 +943,7 @@
 
 					// Allow for collapsing margins
 					largestMargin = Math.max(existingMargin, nextElement ? parseFloat(window.getComputedStyle(nextElement).getPropertyValue('margin-top'), 10) : 0);
-					newMargin     = _roundUpToGrid(elementHeight) - elementHeight + _roundUpToGrid(largestMargin);
+					newMargin     = _roundHeightUp(elementHeight) - elementHeight + _roundHeightUp(largestMargin);
 
 					if (newMargin !== existingMargin) {
 						element.style.marginBottom = newMargin + 'px';
@@ -1217,30 +1215,32 @@
 			});
 		}
 
-
-		function _roundDownToGrid(val, addPadding) {
-			var resized = val - (val % config.lineHeight);
-
-			// If the difference after rounding down is less than the minimum padding, also subtract one grid line
-			if (addPadding && ((val - resized) < minFixedPadding)) {
-				resized -= fixedPadding;
-			}
-
-			return resized;
+		function _roundHeightDown(height) {
+			return height - (height % config.lineHeight);
 		}
 
+		function _roundHeightUp(height) {
+			var delta = height % config.lineHeight;
 
-		function _roundUpToGrid(val, addPadding) {
-
-			var delta   = val % config.lineHeight,
-				resized = (delta ? (val - delta + config.lineHeight) : val);
-
-			// If the difference after rounding up is less than the minimum padding, also add one grid line
-			if (addPadding && ((resized - val) < minFixedPadding)) {
-				resized += fixedPadding;
+			if (delta) {
+				height += config.lineHeight - delta;
 			}
 
-			return resized;
+			return height;
+		}
+
+		function _roundDownToGrid(height) {
+			return _roundHeightDown(height - minPadding - config.layoutDimensions.baselineOffset);
+		}
+
+		function _roundUpToGrid(height) {
+			var delta = _roundHeightUp(height) - height;
+
+			if (delta < (minPadding - config.layoutDimensions.baselineOffset)) {
+				height += minPadding;
+			}
+
+			return _roundHeightUp(height);
 		}
 
 		function _round(val) {
