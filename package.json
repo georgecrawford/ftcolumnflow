@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "echo 'Running tests with PhantomJS'; ./node_modules/.bin/grunt test",
-    "test-server": "echo 'Starting a test server. Capture your browser at http://localhost:1112 before running tests.'; ./node_modules/.bin/grunt server-only",
+    "test-server": "set -m; echo 'Starting a test server. Your browser should open at http://localhost:1112 so that Buster can capture it.'; ./node_modules/.bin/grunt server-only & sleep 2; open http://localhost:1112/capture; fg;",
     "tests-only": "echo 'Running tests; ensure you have already captured a browser at http://localhost:1112'; ./node_modules/.bin/grunt tests-only"
   },
   "keywords": [
