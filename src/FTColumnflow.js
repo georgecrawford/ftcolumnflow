@@ -154,6 +154,7 @@
 			// Collections
 			pagedContent = [],
 			pagedEndContent = [],
+			fixedElementPositions = {},
 
 			// Counters
 			borderElementIndex,
@@ -548,16 +549,28 @@
 		}
 
 
-		function _setFixedElementHeight(element) {
+		function _prepareFixedElement(element) {
 
 			var computedStyle, indexedColStart, indexedColEnd,
-				matches, anchorY, anchorX, colSpan, spanDir;
+				matches, anchorY, anchorX, colSpan, spanDir, pageNum;
 
 			// Don't do any manipulation on text nodes, or nodes which are hidden
 			if (Node.TEXT_NODE === element.nodeType) return false;
 
 			computedStyle = window.getComputedStyle(element);
 			if ('none' === computedStyle.getPropertyValue('display')) return false;
+
+			// Determine the page
+			matches = element.className.match(/(\s|^)attach-page-(last|\d+)(\s|$)/);
+			if (matches) {
+				if ('last' === matches[2]) {
+					pageNum = 'last';
+				} else {
+					pageNum = matches[2] - 1;
+				}
+			} else {
+				pageNum = 0;
+			}
 
 			// Determine the anchor point
 			matches = element.className.match(/(\s|^)anchor-(top|middle|bottom)-(left|right|(?:col-(\d+)))(\s|$)/);
@@ -625,6 +638,7 @@
 
 			return {
 				element:          element,
+				pageNum:          pageNum,
 				preComputedStyle: computedStyle,
 				indexedColStart:  indexedColStart,
 				indexedColEnd:    indexedColEnd,
@@ -641,11 +655,10 @@
 				elementTopPos, elementBottomPos, lowestTopPos, highestBottomPos,
 				topSplitPoint, bottomSplitPoint,
 				firstColFragment, lastColFragment, newColumnFragment, newFragmentHeight,
-				fragment, column, fragNum, fragLen,	columnNum;
+				fragment, column, fragNum, fragLen,	columnNum,
+				isLastElementInPosition, key;
 
-
-			// Determine the page
-			if (element.classList.contains('attach-page-last')) {
+			if ('last' === elementDefinition.pageNum) {
 
 				// Add to a separate store of elements to be added after all the other content is rendered
 				pagedEndContent.push({
@@ -656,21 +669,11 @@
 					}]
 				});
 				return;
-
-			} else {
-
-				// Look for a numeric page
-				matches = element.className.match(/(\s|^)attach-page-(\d+)(\s|$)/);
-				if (matches) {
-					pageNum = matches[2] - 1;
-				} else {
-					pageNum = 0;
-				}
 			}
 
 			// Create any necessary page objects
-			_createPageObjects(pageNum);
-			workingPage = pagedContent[pageNum];
+			_createPageObjects(elementDefinition.pageNum);
+			workingPage = pagedContent[elementDefinition.pageNum];
 
 			// Determine the height of the element, taking into account any vertical shift applied to it using margin-top
 			normalisedElementHeight = element.offsetHeight + parseInt(elementDefinition.preComputedStyle.getPropertyValue('margin-top'), 10);
@@ -700,17 +703,11 @@
 						}
 					}
 					elementBottomPos = elementTopPos + normalisedElementHeight;
-					topSplitPoint    = elementTopPos - config.lineHeight;
-					bottomSplitPoint = _roundUpToGrid(elementBottomPos);
 					break;
 
 				case 'middle':
 					elementTopPos    = colMiddle - (normalisedElementHeight / 2);
-					topSplitPoint    = _roundDownToGrid(elementTopPos);
-					bottomSplitPoint = _roundUpToGrid(elementTopPos + normalisedElementHeight);
-
-					if (topSplitPoint < 0) topSplitPoint = 0;
-					if (bottomSplitPoint > config.layoutDimensions.columnHeight) bottomSplitPoint = config.layoutDimensions.columnHeight;
+					elementBottomPos = elementTopPos + normalisedElementHeight;
 					break;
 
 				case 'bottom':
@@ -735,9 +732,7 @@
 						}
 					}
 
-					elementTopPos    = elementBottomPos - normalisedElementHeight;
-					topSplitPoint    = _roundDownToGrid(elementTopPos);
-					bottomSplitPoint = elementBottomPos + config.lineHeight;
+					elementTopPos = elementBottomPos - normalisedElementHeight;
 					break;
 			}
 
@@ -748,6 +743,35 @@
 			for (columnNum = elementDefinition.indexedColStart; columnNum <= elementDefinition.indexedColEnd; columnNum++) {
 
 				column = workingPage.columns[columnNum];
+
+				// Determine if this is the last fixed element in this page/column
+				// position. If so, baselineOffset needs to be taken into account when
+				// adjusting the split points later
+				isLastElementInPosition = true;
+				key = [elementDefinition.pageNum, columnNum, elementDefinition.anchorY].join('-');
+				fixedElementPositions[key]--;
+				if (fixedElementPositions[key]) isLastElementInPosition = false;
+
+				// Reset to defaults
+				topSplitPoint    = elementTopPos;
+				bottomSplitPoint = elementBottomPos;
+
+				// Add margins, taking baselineOffset into account if this fixed element
+				// will be adjacent to a column fragment
+				switch (elementDefinition.anchorY) {
+					case 'top':
+						topSplitPoint -= config.lineHeight;
+						bottomSplitPoint = _roundUpToGrid(bottomSplitPoint, isLastElementInPosition);
+						break;
+					case 'middle':
+						topSplitPoint    = _roundDownToGrid(topSplitPoint, isLastElementInPosition);
+						bottomSplitPoint = _roundUpToGrid(bottomSplitPoint, isLastElementInPosition);
+						break;
+					case 'bottom':
+						bottomSplitPoint += config.lineHeight;
+						topSplitPoint = _roundDownToGrid(topSplitPoint, isLastElementInPosition);
+						break;
+				}
 
 				// Loop the fragments
 				for (fragNum = 0, fragLen = column.fragments.length; fragNum < fragLen; fragNum++) {
@@ -833,11 +857,12 @@
 		function _flowContent() {
 
 			var fixedElementDefinitions = [],
-				fixedElementDefinition, i, l;
+				fixedElementDefinition, i, l, j, key;
 
 			// Initialise some variables
-			pagedContent      = [];
-			pagedEndContent   = [];
+			fixedElementPositions = {};
+			pagedContent          = [];
+			pagedEndContent       = [];
 
 			indexedPageNum         =
 				indexedColumnNum   =
@@ -858,8 +883,18 @@
 			// Two loops are run: the first sets an explicit width on the element, therefore invalidating the layout,
 			// and the second reads the element's width, forcing a recalculation of styles. This batching avoids layout thrashing.
 			for (i = 0, l = fixedPreloadArea.childNodes.length; i < l; i++) {
-				fixedElementDefinition = _setFixedElementHeight(fixedPreloadArea.childNodes[i]);
-				if (fixedElementDefinition) fixedElementDefinitions.push(fixedElementDefinition);
+				fixedElementDefinition = _prepareFixedElement(fixedPreloadArea.childNodes[i]);
+				if (fixedElementDefinition) {
+					fixedElementDefinitions.push(fixedElementDefinition);
+
+					// Record the number of fixed elements in each page/column position,
+					// so that margins can be correctly added later
+					for (j = fixedElementDefinition.indexedColStart; j <= fixedElementDefinition.indexedColEnd; j++) {
+						key = [fixedElementDefinition.pageNum, j, fixedElementDefinition.anchorY].join('-');
+						fixedElementPositions[key] = fixedElementPositions[key] || 0;
+						fixedElementPositions[key]++;
+					}
+				}
 			}
 
 			for (i = 0, l = fixedElementDefinitions.length; i < l; i++) {
@@ -1229,18 +1264,20 @@
 			return height;
 		}
 
-		function _roundDownToGrid(height) {
-			return _roundHeightDown(height - minPadding - config.layoutDimensions.baselineOffset);
+		function _roundDownToGrid(height, withOffset) {
+			var offset = withOffset ? config.layoutDimensions.baselineOffset : 0;
+			return Math.max(0, _roundHeightDown(height - minPadding - offset));
 		}
 
-		function _roundUpToGrid(height) {
-			var delta = _roundHeightUp(height) - height;
+		function _roundUpToGrid(height, withOffset) {
+			var offset = withOffset ? config.layoutDimensions.baselineOffset : 0;
+			var delta  = _roundHeightUp(height) - height;
 
-			if (delta < (minPadding - config.layoutDimensions.baselineOffset)) {
+			if (delta < (minPadding - offset)) {
 				height += minPadding;
 			}
 
-			return _roundHeightUp(height);
+			return Math.min(config.layoutDimensions.columnHeight, _roundHeightUp(height));
 		}
 
 		function _round(val) {

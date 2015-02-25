@@ -193,6 +193,58 @@ buster.testCase('BaselineOffset', {
 		assert.match(column.offsetHeight, 380);
 	},
 
+	'RegressionShouldPlaceSecondFixedElementUnderneathFirstWithTheCorrectGap' : function() {
+
+		var cf = createCf({
+			baselineOffset:  20
+		}).flow('<div class="height600">height600</div>', '<div class="fixed col-span-2">fixedContent</div><div class="fixed col-span-1">fixedContent</div>');
+
+		var page    = target.querySelector('.cf-page-1');
+		var fixed1  = page.querySelector('.col-span-2');
+		var fixed2  = page.querySelector('.col-span-1');
+		var column1 = page.querySelector('.cf-column-1');
+		var column2 = page.querySelector('.cf-column-2');
+		var column3 = page.querySelector('.cf-column-3');
+
+		assert.match(fixed1.offsetTop, 0);
+		assert.match(fixed2.offsetTop, 220);
+
+		assert.match(column1.offsetTop, 440);
+		assert.match(column1.offsetHeight, 180);
+
+		assert.match(column2.offsetTop, 220);
+		assert.match(column2.offsetHeight, 400);
+
+		assert.match(cssProp(column2.childNodes[0], 'margin-top'), '-180px');
+		assert.match(cssProp(column3.childNodes[0], 'margin-top'), '-580px');
+	},
+
+	'RegressionShouldPlaceSecondFixedElementUnderneathFirstWithTheCorrectGapWithUnevenOffset' : function() {
+
+		var cf = createCf({
+			baselineOffset:  10
+		}).flow('<p class="height600">height600</p>', '<div class="fixed col-span-2">fixedContent</div><div class="fixed col-span-1">fixedContent</div>');
+
+		var page    = target.querySelector('.cf-page-1');
+		var fixed1  = page.querySelector('.col-span-2');
+		var fixed2  = page.querySelector('.col-span-1');
+		var column1 = page.querySelector('.cf-column-1');
+		var column2 = page.querySelector('.cf-column-2');
+		var column3 = page.querySelector('.cf-column-3');
+
+		assert.match(fixed1.offsetTop, 0);
+		assert.match(fixed2.offsetTop, 220);
+
+		assert.match(column1.offsetTop, 450);
+		assert.match(column1.offsetHeight, 160);
+
+		assert.match(column2.offsetTop, 230);
+		assert.match(column2.offsetHeight, 380);
+
+		assert.match(cssProp(column2.childNodes[0], 'margin-top'), '-160px');
+		assert.match(cssProp(column3.childNodes[0], 'margin-top'), '-540px');
+	},
+
 //*/
 
 });
