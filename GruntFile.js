@@ -14,7 +14,8 @@ module.exports = function(grunt) {
       manual: {
         test: {
           config: 'test/buster.js',
-          // reporter: 'specification'
+          // reporter: 'specification',
+          'static-paths': true
         },
         server: {
           port: 1112
