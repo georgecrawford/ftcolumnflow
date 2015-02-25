@@ -245,6 +245,32 @@ buster.testCase('BaselineOffset', {
 		assert.match(cssProp(column3.childNodes[0], 'margin-top'), '-540px');
 	},
 
+	'ShouldAnchorToTopRightAndStackBelowFullColumnSpan' : function() {
+
+		var cf = createCf({
+			baselineOffset:  10,
+		}).flow('<p class="height600">height600</p><p class="height600">height600</p><p class="height600">height600</p>', '<div class="fixed fixed-1 anchor-top-left col-span-all">fixedContent</div><div class="fixed fixed-2 anchor-top-right">fixedContent</div>');
+
+		var page    = target.querySelector('.cf-page-1');
+		var fixed1  = page.querySelector('.fixed-1');
+		var fixed2  = page.querySelector('.fixed-2');
+
+		var column2 = page.querySelector('.cf-column-2');
+		var column3 = page.querySelector('.cf-column-3');
+
+		assert.match(fixed1.offsetTop, 0);
+		assert.match(fixed1.offsetLeft, 0);
+
+		assert.match(fixed2.offsetTop, 220);
+		assert.match(fixed2.offsetLeft, 550);
+
+		assert.match(column2.offsetTop, 230);
+		assert.match(column2.offsetHeight, 380);
+
+		assert.match(column3.offsetTop, 450);
+		assert.match(column3.offsetHeight, 160);
+	},
+
 //*/
 
 });
